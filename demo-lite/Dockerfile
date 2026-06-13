@@ -15,7 +15,7 @@ RUN python -m pip install --upgrade pip setuptools wheel \
     && python -m pip install -e ".[dev]" \
     && python -m pip cache purge || true
 
-COPY entrypoint.sh /app/demo-lite/entrypoint.sh
+COPY demo-lite/entrypoint.sh /app/demo-lite/entrypoint.sh
 RUN chmod +x /app/demo-lite/entrypoint.sh
 
 ENTRYPOINT ["/app/demo-lite/entrypoint.sh"]
