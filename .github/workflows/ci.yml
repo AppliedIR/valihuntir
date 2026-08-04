@@ -2,6 +2,48 @@ name: CI
 
 on:
   push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install build deps
+        run: |
+          python -m pip install --upgrade pip build
+
+      - name: Install package (dev)
+        run: |
+          python -m pip install -e '.[dev]'
+
+      - name: Run tests
+        run: |
+          pytest -q
+
+      - name: Set up QEMU and Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build demo-lite Docker image (no push)
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: demo-lite/Dockerfile
+          push: false
+          tags: valhuntir-lite:ci
+name: CI
+
+on:
+  push:
     branches: [main]
   pull_request:
     branches: [main]
